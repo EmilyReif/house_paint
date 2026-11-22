@@ -252,6 +252,15 @@ function buildRegionControls() {
     hexRow.appendChild(hex);
     pickers[r.key] = { picker, hex, seg };
   });
+  // swap trim <-> accent, sitting on the boundary between those two segments
+  const swap = document.createElement('button');
+  swap.type = 'button';
+  swap.className = 'swap';
+  swap.textContent = '⇄';
+  swap.title = 'Swap trim and accent';
+  swap.setAttribute('aria-label', 'Swap trim and accent colors');
+  swap.addEventListener('click', () => applyCombo(state.colors.siding, state.colors.accent, state.colors.trim));
+  bar.appendChild(swap);
   host.append(bar, hexRow);
   syncPickers();
 }
