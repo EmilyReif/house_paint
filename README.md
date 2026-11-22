@@ -40,3 +40,5 @@ It works in OKLCH, so equal lightness looks equal across hues, and it edits the 
 formula circle. Drag the **S** / **T** / **A** pins onto its siding, trim and accent. Each pin averages a small patch
 under it and sets that color. Scroll or pinch to zoom, drag the photo to pan, and double-click to reset. The photo stays
 in your browser and is never uploaded.
+
+Press **↑ / ↓** to step through the Favorites and Defaults lists. The combo matching the current colors is shown in white.

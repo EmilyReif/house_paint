@@ -276,6 +276,7 @@ function syncPickers() {
     const [cr, cg, cb] = hexToSrgb(v);
     p.seg.style.color = 0.3 * cr + 0.59 * cg + 0.11 * cb > 0.55 ? 'rgba(0,0,0,0.75)' : 'rgba(255,255,255,0.9)';
   }
+  markCurrentCombo();
   if (window.onColorsChanged) window.onColorsChanged(); // formula.js
 }
 
@@ -289,8 +290,38 @@ function applyCombo(siding, trim, accent) {
   syncPickers(); saveState(); render();
 }
 
+// ---- combo lists: highlight the one matching the current colors; ↑/↓ steps through them ----
+// Order = Favorites, then Defaults (as shown on screen).
+const comboCards = () => Array.from(document.querySelectorAll('#saved .combo, #presets .combo'));
+const currentKey = () => [state.colors.siding, state.colors.trim, state.colors.accent].join().toUpperCase();
+function markCurrentCombo() {
+  let found = false;
+  for (const c of comboCards()) {
+    const on = !found && c.dataset.colors === currentKey();
+    c.classList.toggle('current', on);
+    found = found || on;
+  }
+}
+function stepCombo(d) {
+  const cards = comboCards();
+  if (!cards.length) return;
+  let i = cards.findIndex((c) => c.classList.contains('current'));
+  i = i < 0 ? (d > 0 ? 0 : cards.length - 1) : (i + d + cards.length) % cards.length;
+  cards[i].click();
+  cards[i].scrollIntoView({ block: 'nearest' });
+}
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return;
+  if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey) return;
+  const t = e.target;
+  if (t.closest && t.closest('input, textarea, select, canvas, [contenteditable]')) return; // let those use arrows
+  e.preventDefault();
+  stepCombo(e.key === 'ArrowDown' ? 1 : -1);
+});
+
 function comboCard(label, colors, onRemove) {
   const card = document.createElement('button');
+  card.dataset.colors = colors.join().toUpperCase();
   card.type = 'button';
   card.className = 'combo';
   card.title = `Siding ${colors[0]} · Trim ${colors[1]} · Accent ${colors[2]}`;
@@ -321,6 +352,7 @@ function comboCard(label, colors, onRemove) {
 function buildPresets() {
   const host = document.getElementById('presets');
   window.PRESETS.forEach((colors, idx) => host.appendChild(comboCard('#' + (idx + 1), colors)));
+  markCurrentCombo();
 }
 
 function renderSaved() {
@@ -334,6 +366,7 @@ function renderSaved() {
     host.appendChild(card);
   });
   document.getElementById('savedEmpty').hidden = state.saved.length > 0;
+  markCurrentCombo();
 }
 
 // Drag-to-reorder for the saved list (native HTML5 drag and drop).
