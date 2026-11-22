@@ -2,6 +2,8 @@
 
 Pick siding / trim / accent colors and see them on the house.
 
+**Live:** https://emilyreif.com/house_paint/
+
 ```sh
 python3 -m http.server 8000 --bind 127.0.0.1
 # open http://127.0.0.1:8000
