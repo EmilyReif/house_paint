@@ -80,6 +80,8 @@ input[type="color"]::-moz-color-swatch { border: none; border-radius: 3px; }
 }
 .combo:hover { color: var(--hover); }
 .num { font-size: 11px; font-variant-numeric: tabular-nums; }
+.combo .num { visibility: hidden; } /* number only on hover (space kept so bars stay aligned) */
+.combo:hover .num, .combo:focus-visible .num { visibility: visible; }
 .swatches { display: flex; height: 20px; }
 .sw0 { flex: 3; }
 .sw1 { flex: 1.2; }
