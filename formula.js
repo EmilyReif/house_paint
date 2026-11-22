@@ -86,13 +86,23 @@
   //   hue ring     - colored; S/T/A dots sit on it. Click a dot to select it, drag it to change its hue
   //   square       - lightness (up) × saturation (right); all dots shown, the selected one is editable
 //                  (click a faded dot to select it — the square then shows that dot's hue)
+  // Layout: [Lightness presets]  [circle]  [Hue formulas]
   const host = document.getElementById('formula');
+  const col = (cls, title) => {
+    const d = document.createElement('div');
+    d.className = 'formula-col ' + cls;
+    const h = document.createElement('h3');
+    h.textContent = title;
+    d.appendChild(h);
+    return d;
+  };
+  const lightCol = col('lightness', 'Lightness');
+  const hueCol = col('hues', 'Hues');
   const cv = document.createElement('canvas');
   cv.tabIndex = 0;
   cv.setAttribute('aria-label', 'Color formula: outer line rotates all hues; click a dot on the color ring to select it; the square sets its lightness and saturation. Arrow keys rotate.');
-  host.appendChild(cv);
-  const btns = document.createElement('div');
-  btns.className = 'row formulas';
+  host.append(lightCol, cv, hueCol);
+
   for (const [label, dt, da] of FORMULAS) {
     const b = document.createElement('button');
     b.type = 'button'; b.className = 'btn'; b.textContent = label;
@@ -101,9 +111,36 @@
       lch.accent.h = (lch.siding.h + da + 360) % 360;
       push();
     });
-    btns.appendChild(b);
+    hueCol.appendChild(b);
   }
-  host.appendChild(btns);
+
+  // Lightness presets per region (OKLCH L); chroma + hue are kept.
+  const LEVELS = [['light', 0.9], ['med', 0.63], ['dark', 0.36]];
+  const levelOf = (L) => (L >= 0.77 ? 'light' : L >= 0.5 ? 'med' : 'dark');
+  const levelBtns = {};
+  for (const k of KEYS) {
+    const name = document.createElement('div');
+    name.className = 'lvl-name';
+    name.textContent = k[0].toUpperCase() + k.slice(1);
+    const row = document.createElement('div');
+    row.className = 'lvl-row';
+    levelBtns[k] = {};
+    for (const [label, L] of LEVELS) {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'btn'; b.textContent = label;
+      b.setAttribute('aria-label', `${k} ${label}`);
+      b.addEventListener('click', () => { lch[k].L = L; selected = k; push(); });
+      row.appendChild(b);
+      levelBtns[k][label] = b;
+    }
+    lightCol.append(name, row);
+  }
+  function markLevels() {
+    for (const k of KEYS) {
+      const cur = levelOf(lch[k].L);
+      for (const [label] of LEVELS) levelBtns[k][label].classList.toggle('on', label === cur);
+    }
+  }
 
   let selected = 'siding';
   let size = 0, dpr = 1, ringBg = null;
@@ -115,8 +152,9 @@
     const half = (rHue - HUE_W / 2 - 8) / Math.SQRT2; // inscribed square half-side
     return { c, rRot, rHue, sq: { x: c - half, y: c - half, s: half * 2 } };
   };
+  const SIZE = 280; // circle size (CSS px)
   function layout() {
-    size = host.clientWidth || 200;
+    size = SIZE;
     dpr = window.devicePixelRatio || 1;
     cv.style.width = cv.style.height = size + 'px';
     cv.width = cv.height = Math.round(size * dpr);
@@ -135,6 +173,7 @@
 
   function draw() {
     if (!size || !lch.siding) return;
+    markLevels();
     const ctx = cv.getContext('2d');
     const { c, rRot, rHue, sq } = geo();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
