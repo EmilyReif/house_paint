@@ -11,8 +11,16 @@
 * { box-sizing: border-box; }
 body { margin: 0; }
 
-.layout { display: grid; grid-template-columns: 1fr 420px 230px; column-gap: 40px; height: 100vh; padding-right: 24px; }
-.stage { display: flex; flex-direction: column; padding: 16px; gap: 10px; min-width: 0; }
+:root {
+  /* Photo column = exactly as wide as the two stacked photos (aspect 1024:604 ≈ 1.695) at the window's height.
+     Stage vertical chrome: 16px top + 16px bottom padding, 10px gap, ~18px button bar, 10px between photos. */
+  --photo-h: calc((100vh - 70px) / 2);
+  --photo-col: min(calc(var(--photo-h) * 1.695 + 16px), 58vw);
+  --side-col: 230px;
+  --center-pad: 48px;
+}
+.layout { display: grid; grid-template-columns: var(--photo-col) minmax(320px, 1fr) var(--side-col); height: 100vh; padding-right: 24px; }
+.stage { display: flex; flex-direction: column; padding: 16px 0 16px 16px; gap: 10px; min-width: 0; }
 .canvas-wrap { position: relative; flex: 1; display: flex; align-items: center; justify-content: center; min-height: 0; }
 .views { display: flex; flex-direction: column; gap: 10px; width: 100%; height: 100%; align-items: flex-start; min-height: 0; }
 .views canvas { flex: 1 1 0; min-height: 0; width: auto; max-width: 100%; object-fit: contain; object-position: left center; }
@@ -22,6 +30,7 @@ body { margin: 0; }
 .val { min-width: 32px; font-variant-numeric: tabular-nums; }
 
 .panel { padding: 16px 0; overflow-y: auto; }
+.panel.controls { padding-left: var(--center-pad); padding-right: var(--center-pad); } /* equal gap to both neighbors */
 h2 { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 20px 0 8px; }
 h2:first-child { margin-top: 0; }
 .muted { color: var(--muted); margin: 0; }
@@ -104,7 +113,7 @@ input[type="color"]::-moz-color-swatch { border: none; border-radius: 3px; }
 .photo-row { margin-top: 6px; flex: none; }
 
 @media (max-width: 800px) {
-  .layout { grid-template-columns: 1fr; height: auto; }
+  .layout { grid-template-columns: 1fr; height: auto; padding-right: 0; }
   .stage { height: 70vh; }
-  .panel { padding: 16px; }
+  .panel, .panel.controls { padding: 16px; }
 }
