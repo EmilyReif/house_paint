@@ -390,20 +390,33 @@ function wireControls() {
   });
   document.getElementById('randomCombo').addEventListener('click', randomCombo);
   document.getElementById('download').addEventListener('click', () => {
+    // One PNG with the painted photos side by side, scaled to a common height (no split line / original).
     const tag = `${state.colors.siding}-${state.colors.trim}-${state.colors.accent}`.replace(/#/g, '');
-    for (const v of views) {
-      // export the painted image only (no split line / original)
+    const GAP = 12;
+    const H = Math.max(...views.map((v) => v.H));
+    const widths = views.map((v) => Math.round((v.W * H) / v.H));
+    const out = document.createElement('canvas');
+    out.width = widths.reduce((a, w) => a + w, 0) + GAP * (views.length - 1);
+    out.height = H;
+    const octx = out.getContext('2d');
+    octx.fillStyle = '#ffffff';
+    octx.fillRect(0, 0, out.width, out.height);
+    octx.imageSmoothingQuality = 'high';
+    let x = 0;
+    views.forEach((v, i) => {
       const c = document.createElement('canvas');
       c.width = v.W; c.height = v.H;
       c.getContext('2d').putImageData(v.outImage, 0, 0);
-      c.toBlob((blob) => {
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `house-${v.name.toLowerCase()}-${tag}.png`;
-        a.click();
-        setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-      }, 'image/png');
-    }
+      octx.drawImage(c, x, 0, widths[i], H);
+      x += widths[i] + GAP;
+    });
+    out.toBlob((blob) => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `house-${tag}.png`;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    }, 'image/png');
   });
 }
 
