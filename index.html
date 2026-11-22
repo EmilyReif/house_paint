@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- TODO(security): frame-ancestors can't be set via <meta>; add it as a response header if this is ever hosted. -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' blob: data:; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>House Paint Preview</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="layout">
+    <section class="stage">
+      <div class="canvas-wrap">
+        <div id="views" class="views"></div>
+        <div id="status" class="status">Loading…</div>
+      </div>
+      <div class="stage-bar">
+        <button id="download" type="button" class="btn">Download PNG</button>
+      </div>
+    </section>
+
+    <aside class="panel controls">
+      <h2>Colors</h2>
+      <div id="regions" class="regions"></div>
+      <div class="row">
+        <button id="saveCombo" type="button" class="btn">Add to favorites</button>
+        <button id="randomCombo" type="button" class="btn">Random</button>
+      </div>
+
+      <div id="formula" class="formula"></div>
+
+      <div id="photoBox" class="photo-box" role="button" tabindex="0" aria-label="Upload a house photo to pick colors from">
+        <span class="photo-prompt">Drop a house photo here, or click to upload</span>
+      </div>
+      <input id="photoFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/avif,image/bmp" hidden>
+      <div class="row photo-row">
+        <button id="removePhoto" type="button" class="btn" hidden>Remove photo</button>
+        <span id="photoNote" class="muted" aria-live="polite"></span>
+      </div>
+
+    </aside>
+
+    <aside class="panel defaults">
+      <h2>Favorites</h2>
+      <div id="saved" class="combo-list"></div>
+      <p id="savedEmpty" class="muted">Nothing saved yet.</p>
+
+      <h2>Defaults</h2>
+      <div id="presets" class="combo-list"></div>
+    </aside>
+  </main>
+  <script src="palettes.js"></script>
+  <script src="app.js"></script>
+  <script src="formula.js"></script>
+  <script src="reference.js"></script>
+</body>
+</html>
+
