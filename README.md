@@ -32,7 +32,7 @@ brightness (raised to `SHADING` = 1.5 in `app.js`).
 - **Color ring**: has **S**iding, **T**rim and **A**ccent dots. Click a dot to select it, and drag it to change just that hue.
 - **Square in the middle**: lightness (up) × saturation (right). All three dots show; the selected one is editable, and clicking a faded one selects it (the square switches to that dot's hue).
 - **Hues** (right column): snap T and A into common hue relationships with S.
-- **Lightness** (left column): set siding, trim and accent to light, medium or dark. The current level is underlined.
+- **Lightness** (left column): set siding, trim and accent to light, medium or dark. The current level (and the matching hue formula, if any) is shown in white.
 
 It works in OKLCH, so equal lightness looks equal across hues, and it edits the same three colors as everything else.
 

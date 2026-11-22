@@ -95,10 +95,10 @@ input[type="color"]::-moz-color-swatch { border: none; border-radius: 3px; }
 .formula canvas { display: block; touch-action: none; outline: none; }
 .formula canvas:focus-visible { outline: 1px solid var(--muted); }
 .formula-col { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
-.formula-col h3 { margin: 0 0 4px; font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
-.lvl-name { color: var(--text); font-size: 12px; margin-top: 4px; }
+.formula-col h3 { margin: 0 0 2px; font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.lvl-name { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: .08em; margin-top: 6px; }
 .lvl-row { display: flex; gap: 8px; }
-.formula-col .btn.on { color: var(--hover); text-decoration: underline; text-underline-offset: 3px; }
+.formula-col .btn.on { color: var(--hover); }
 .formula { margin-top: 18px; } /* circle is a fixed 280px; side columns wrap below if the column is narrow */
 
 .panel.controls { display: flex; flex-direction: column; }

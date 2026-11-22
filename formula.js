@@ -103,6 +103,7 @@
   cv.setAttribute('aria-label', 'Color formula: outer line rotates all hues; click a dot on the color ring to select it; the square sets its lightness and saturation. Arrow keys rotate.');
   host.append(lightCol, cv, hueCol);
 
+  const hueBtns = [];
   for (const [label, dt, da] of FORMULAS) {
     const b = document.createElement('button');
     b.type = 'button'; b.className = 'btn'; b.textContent = label;
@@ -112,6 +113,7 @@
       push();
     });
     hueCol.appendChild(b);
+    hueBtns.push([b, dt, da]);
   }
 
   // Lightness presets per region (OKLCH L); chroma + hue are kept.
@@ -135,10 +137,19 @@
     }
     lightCol.append(name, row);
   }
+  // Highlight the current lightness level per region, and the hue formula that matches (if any).
+  const angDiff = (a, b) => Math.abs(((a - b + 540) % 360) - 180);
   function markLevels() {
     for (const k of KEYS) {
       const cur = levelOf(lch[k].L);
       for (const [label] of LEVELS) levelBtns[k][label].classList.toggle('on', label === cur);
+    }
+    const dt = lch.trim.h - lch.siding.h, da = lch.accent.h - lch.siding.h;
+    let matched = false;
+    for (const [b, ft, fa] of hueBtns) {
+      const on = !matched && angDiff(dt, ft) < 8 && angDiff(da, fa) < 8;
+      b.classList.toggle('on', on);
+      matched = matched || on;
     }
   }
 
