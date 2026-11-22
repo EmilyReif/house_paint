@@ -17,7 +17,8 @@ const HEX_RE = /^#[0-9a-f]{6}$/i;
 const SHADING = 1.5; // how strongly the photo's light/shadow modulates the paint (1 = proportional)
 
 const state = {
-  colors: { siding: '#D8C3A0', trim: '#3B3A36', accent: '#9E2B25' },
+  // default = preset #23 (until the user picks something; their last colors are remembered)
+  colors: (([siding, trim, accent]) => ({ siding, trim, accent }))(window.PRESETS[22]),
   saved: [],
   split: 0.1,    // 0..1: left of this fraction of the width shows the original photo
 };
