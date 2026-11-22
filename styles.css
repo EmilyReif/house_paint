@@ -17,6 +17,8 @@ body { margin: 0; }
   --photo-h: calc((100vh - 70px) / 2);
   --photo-col: min(calc(var(--photo-h) * 1.695 + 16px), 58vw);
   --side-col: 230px;
+  --num-w: 24px;   /* combo number column */
+  --num-gap: 4px;  /* number ↔ color band */
   --center-pad: 48px;
 }
 .layout { display: grid; grid-template-columns: var(--photo-col) minmax(320px, 1fr) var(--side-col); height: 100vh; padding-right: 24px; }
@@ -73,9 +75,10 @@ input[type="color"]::-moz-color-swatch { border: none; border-radius: 3px; }
 /* combos: one per row — "#4 [siding | trim | accent]" */
 .combo-list { display: flex; flex-direction: column; gap: 9px; }
 .defaults h2 { margin-top: 28px; }
+.defaults h2, .defaults .muted { padding-left: calc(var(--num-w) + var(--num-gap)); } /* align with the color bands */
 .defaults h2:first-child { margin-top: 0; }
 .combo {
-  display: grid; grid-template-columns: 30px 1fr 14px; align-items: center; gap: 8px;
+  display: grid; grid-template-columns: var(--num-w) 1fr 14px; align-items: center; gap: var(--num-gap);
   background: none; border: none; padding: 0; color: var(--muted); font: inherit; cursor: pointer; text-align: left;
 }
 .combo:hover { color: var(--hover); }
